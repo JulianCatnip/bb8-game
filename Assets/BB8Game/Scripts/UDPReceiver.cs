@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using MiniJSON;
+using UnityEngine;
+
+public class UDPReceiver : MonoBehaviour
+{
+
+    [SerializeField]
+    private int LOCAL_PORT = 50000;
+    static UdpClient udp;
+    Thread thread;
+
+    public static Action<float, float, float> AccelCallBack;
+    public static Action<float, float, float, float> GyroCallBack;
+
+    public void UDPStart ()
+    {
+        udp = new UdpClient (LOCAL_PORT);
+        thread = new Thread (new ThreadStart (ThreadMethod));
+        thread.Start ();
+    }
+
+    private static void ThreadMethod ()
+    {
+        while (true)
+        {
+            IPEndPoint remoteEp = null;
+            byte[] data = udp.Receive (ref remoteEp);
+            string text = Encoding.ASCII.GetString (data);
+
+            JsonNode jsonNode = JsonNode.Parse (text);
+
+            double ax = jsonNode["sensordata"]["accel"]["x"].Get<double> ();
+            double ay = jsonNode["sensordata"]["accel"]["y"].Get<double> ();
+            double az = jsonNode["sensordata"]["accel"]["z"].Get<double> ();
+
+            double qutX = jsonNode["sensordata"]["quaternion"]["x"].Get<double> ();
+            double qutY = jsonNode["sensordata"]["quaternion"]["y"].Get<double> ();
+            double qutZ = jsonNode["sensordata"]["quaternion"]["z"].Get<double> ();
+            double qutW = jsonNode["sensordata"]["quaternion"]["w"].Get<double> ();
+
+            AccelCallBack ((float) ax, (float) ay, (float) az);
+            GyroCallBack ((float) qutX, (float) qutY, (float) qutZ, (float) qutW);
+        }
+    }
+
+    void OnApplicationQuit ()
+    {
+        thread.Abort ();
+    }
+}
