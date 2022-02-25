@@ -1,4 +1,4 @@
-# BB8 Movement Exercise
+# BB8 Obstacle Game
 A small obstacle game as a game development exercise. 
 
 ![BB8 Game](https://user-images.githubusercontent.com/40600576/155817143-7ec27712-d785-407d-9dc4-d82682449bae.png)
@@ -11,7 +11,7 @@ A small obstacle game as a game development exercise.
 
 ## Game features
 - Smartphone controls using gyroscope data sent over UDP with the ZigZim app.
-- Stereoskopic 3D render option (this game was developed to be demonstrated in the UBIC 3D theater of the University of Aizu, Japan)
+- Stereoscopic camera option for 3D view (this game was developed to be demonstrated in the UBIC 3D theater of the University of Aizu, Japan)
 
 ## Technical details
 - Unity version:
